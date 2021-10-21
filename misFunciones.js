@@ -169,7 +169,7 @@ function pintarRespuesta(respuesta,extension, espacio){
           
             for(atr in respuesta[i][campo]){
 
-              if(atr!="id" && atr!="password" && atr!="age"){    
+              if(atr!="idClient" && atr!="password" && atr!="age"){    
                 myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr] +" ";
                 myTable+="<br>";
               }
