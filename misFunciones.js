@@ -1,6 +1,6 @@
 function traerInformacion(extension, espacio){
 $.ajax({
-url:"http://150.136.4.8/api/"+extension+"/all",
+url:"http://150.136.4.8:8080/api/"+extension+"/all",
 type:"GET",
 datatype:"JSON",
 success:function(respuesta){
@@ -192,7 +192,7 @@ function pintarRespuesta(respuesta,extension, espacio){
 function guardarInformacion(extension, espacio, data){
       let dataToSend=JSON.stringify(data);
       $.ajax({
-  	url:"http://150.136.4.8/api/"+extension+"/save",
+  	url:"http://150.136.4.8:8080/api/"+extension+"/save",
   	type:"POST",
   	data:dataToSend,
         contentType:"application/JSON",
