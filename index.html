@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table,th,td{
+        border-collapse:collapse;
+        border:1px solid black;
+      }
+    </style>
+    <meta charset="UTF-8">
+    <title>Reto 3</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="misFunciones.js"></script>
+  </head>
+  <body>
+    <h1 style="text-align:center;font-family:verdana">&#128512; Reto 3 &#129297;</h1>
+
+    <div id="gestion_salones" style="background-color:powderblue">
+      <h2 style="font-family:verdana">Gestión de salones</h2>
+      <div id="resultado_salones"></div>
+      <div><br></div>
+      <button onclick='traerInformacion("Partyroom","salones")'>Consultar</button>
+      <div id="actualizar_salones" style="display:none">
+      <h3 style="font-family:verdana">Actualizar salón</h3>
+      <input type="number" id="id_act_salones" placeholder="id">
+      <input type="text" id="owner_act_salones" placeholder="owner">
+      <input type="number" id="capacity_act_salones" placeholder="capacity">
+      <input type="number" id="category_id_act_salones" placeholder="category_id">
+      <input type="text" id="name_act_salones" placeholder="name">
+      <button onclick='actualizarInformacion("partyroom","salones", {
+      id:$("#id_act_salones").val(),
+      owner:$("#owner_act_salones").val(),
+      capacity:$("#capacity_act_salones").val(),
+      category_id:$("#category_id_act_salones").val(),
+      name:$("#name_act_salones").val()
+      })'>Actualizar</button>
+      </div>
+      <h3 style="font-family:verdana">Agregar salón</h3>
+      <input type="text" id="owner_salones" placeholder="owner">
+      <input type="number" id="capacity_salones" placeholder="capacity">
+      <label for="category_salones">category:</label>
+      <script>
+        function cargarCategorias(){
+	  $.ajax({
+          url:"http://150.136.4.8/api/Category/all",
+          type:"GET",
+          datatype:"JSON",
+          success:function(respuesta){
+            const $select = document.querySelector("#category_salones");
+            for (let i = $select.options.length; i >= 0; i--) {
+                 $select.remove(i);
+                }
+            for(let i=0;i<respuesta.length;i++){
+	        const option = document.createElement('option');
+                option.value = respuesta[i].id;
+  	        option.text = respuesta[i].name;
+   	        $select.appendChild(option);
+             }
+	    document.getElementById("category_salones").value="";
+          }
+          });
+        }
+      cargarCategorias();
+      </script>
+      <select name="category_salones" id="category_salones" style="width:100px;">
+      </select>
+      <input type="text" id="name_salones" placeholder="name">
+      <input type="text" id="description_salones" placeholder="description">
+      <button onclick='guardarInformacion("Partyroom","salones",
+      {owner:$("#owner_salones").val(),
+      capacity:parseInt($("#capacity_salones").val()),
+      category:{id:parseInt($("#category_salones").val())},
+      name:$("#name_salones").val(),
+      description:$("#description_salones").val()}
+      );limpiarCampos({"name_salones":0,"category_salones":0,"capacity_salones":0,"owner_salones":0, "description_salones":0});alert("Se ha guardado.")'>Agregar</button>
+    </div>
+
+
+    <div id="gestion_categorias" style="background-color:#8AFF33">
+      <h2 style="font-family:verdana">Gestión de categorías</h2>
+      <div id="resultado_categorias"></div>
+      <div><br></div>
+      <button onclick='traerInformacion("Category","categorias")'>Consultar</button>
+      <div id="actualizar_salones" style="display:none">
+      <h3 style="font-family:verdana">Actualizar categoría</h3>
+      <input type="text" id="owner_act_salones" placeholder="owner">
+      <input type="number" id="capacity_act_salones" placeholder="capacity">
+      <input type="number" id="category_id_act_salones" placeholder="category_id">
+      <input type="text" id="name_act_salones" placeholder="name">
+      <button onclick='actualizarInformacion("partyroom","salones", {
+      id:$("#id_act_salones").val(),
+      owner:$("#owner_act_salones").val(),
+      capacity:$("#capacity_act_salones").val(),
+      category_id:$("#category_id_act_salones").val(),
+      name:$("#name_act_salones").val()
+      })'>Actualizar</button>
+      </div>
+      <h3 style="font-family:verdana">Agregar categoría</h3>
+      <input type="text" id="name_categorias" placeholder="name">
+      <input type="text" id="description_categorias" placeholder="description">
+      <button onclick='guardarInformacion("Category","categorias",
+      {name:$("#name_categorias").val(),
+      description:$("#description_categorias").val()
+      }
+      );limpiarCampos({"name_categorias":0,"description_categorias":0});alert("Se ha guardado.")'>Agregar</button>
+    </div>
+
+
+    <div id="gestion_clientes" style="background-color:tomato;">
+      <h2 style="font-family:verdana">Gestión de clientes</h2>
+      <div id="resultado_clientes"></div>
+      <div><br></div>
+      <button onclick='traerInformacion("Client","clientes")'>Consultar</button>
+      <div id="actualizar_clientes" style="display:none">
+      <h3 style="font-family:verdana">Actualizar cliente</h3>
+      <input type="number" id="id_act_clientes" placeholder="id">
+      <input type="text" id="name_act_clientes" placeholder="name">
+      <input type="text" id="email_act_clientes" placeholder="email">
+      <input type="number" id="age_act_clientes" placeholder="age">
+      <button onclick='actualizarInformacion("client","clientes", {
+      id:$("#id_act_clientes").val(),
+      name:$("#name_act_clientes").val(),
+      email:$("#email_act_clientes").val(),
+      age:$("#age_act_clientes").val()
+      })'>Actualizar</button>
+      </div>
+      <h3 style="font-family:verdana">Agregar cliente</h3>
+      <input type="text" id="name_clientes" placeholder="name">
+      <input type="text" id="email_clientes" placeholder="email">
+      <input type="text" id="password_clientes" placeholder="password">
+      <input type="number" id="age_clientes" placeholder="age">
+      <button onclick='guardarInformacion("Client","clientes",
+      {name:$("#name_clientes").val(),
+      email:$("#email_clientes").val(),
+      password:$("#password_clientes").val(),
+      age:$("#age_clientes").val()
+      });limpiarCampos({"name_clientes":0,"email_clientes":0,"password_clientes":0, "age_clientes":0});alert("Se ha guardado.")'>Agregar</button>
+    </div>
+
+
+    <div id="gestion_mensajes" style="background-color:mediumseagreen">
+      <h2 style="font-family:verdana">Gestión de mensajes</h2>
+      <div id="resultado_mensajes"></div>
+      <div><br></div>
+      <button onclick='traerInformacion("Message","mensajes")'>Consultar</button>
+      <div id="actualizar_mensajes" style="display:none">
+      <h3 style="font-family:verdana">Actualizar mensaje</h3>
+      <input type="number" id="id_act_mensajes" placeholder="id">
+      <input type="text" id="messagetext_act_mensajes" placeholder="messagetext">
+      <button onclick='actualizarInformacion("message","mensajes", {
+      id:$("#id_act_mensajes").val(),
+      messagetext:$("#messagetext_act_mensajes").val()
+      })'>Actualizar</button>
+      </div>
+      <h3 style="font-family:verdana">Agregar mensaje</h3>
+      <input type="text" id="messagetext_mensajes" placeholder="messagetext">
+      <label for="clients">client:</label>
+      <script>
+        function cargarClientes(){
+	  $.ajax({
+          url:"http://150.136.4.8/api/Client/all",
+          type:"GET",
+          datatype:"JSON",
+          success:function(respuesta){
+            const $select = document.querySelector("#clients");
+            for (let i = $select.options.length; i >= 0; i--) {
+                 $select.remove(i);
+                }
+            for(let i=0;i<respuesta.length;i++){
+	        const option = document.createElement('option');
+                option.value = respuesta[i].idClient;
+  	        option.text = respuesta[i].name;
+   	        $select.appendChild(option);
+             }
+	    document.getElementById("clients").value="";
+          }
+          });
+        }
+      cargarClientes();
+      </script>
+      <select name="clients" id="clients" style="width:150px;">
+      </select>
+      <label for="partyrooms">partyroom:</label>
+      <script>
+        function cargarPartyrooms(){
+	  $.ajax({
+          url:"http://150.136.4.8/api/Partyroom/all",
+          type:"GET",
+          datatype:"JSON",
+          success:function(respuesta){
+            const $select = document.querySelector("#partyrooms");
+            for (let i = $select.options.length; i >= 0; i--) {
+                 $select.remove(i);
+                }
+            for(let i=0;i<respuesta.length;i++){
+	        const option = document.createElement('option');
+                option.value = respuesta[i].id;
+  	        option.text = respuesta[i].name;
+   	        $select.appendChild(option);
+             }
+	    document.getElementById("partyrooms").value="";
+          }
+          });
+        }
+      cargarPartyrooms();
+      </script>
+      <select name="partyrooms" id="partyrooms" style="width:150px;">
+      </select>
+      <button onclick='guardarInformacion("Message","mensajes",
+      {messageText:$("#messagetext_mensajes").val(),
+       client:{idClient:parseInt($("#clients").val())},
+       partyroom:{id:parseInt($("#partyrooms").val())}
+      });limpiarCampos({"messagetext_mensajes":0,"clients":0,"partyrooms":0});alert("Se ha guardado.")'>Agregar</button>
+    </div>
+
+
+
+    <div id="gestion_reservas" style="background-color:mediumseagreen">
+      <h2 style="font-family:verdana">Gestión de reservas</h2>
+      <div id="resultado_reservas"></div>
+      <div><br></div>
+      <button onclick='traerInformacion("Reservation","reservas")'>Consultar</button>
+      <div id="actualizar_mensajes" style="display:none">
+      <h3 style="font-family:verdana">Actualizar mensaje</h3>
+      <input type="number" id="id_act_mensajes" placeholder="id">
+      <input type="text" id="messagetext_act_mensajes" placeholder="messagetext">
+      <button onclick='actualizarInformacion("message","mensajes", {
+      id:$("#id_act_mensajes").val(),
+      messagetext:$("#messagetext_act_mensajes").val()
+      })'>Actualizar</button>
+      </div>
+      <h3 style="font-family:verdana">Agregar reserva</h3>
+      <label for="start">Start date:</label>
+      <input type="date" id="start" name="start"
+       value="2021-01-01"
+       min="2018-01-01" max="2023-12-31">
+      <label for="devolution">Devolution date:</label>
+      <input type="date" id="devolution" name="devolution"
+       value="2021-01-01"
+       min="2018-01-01" max="2024-12-31">
+      <label for="clients2">client:</label>
+      <script>
+        function cargarClientes2(){
+	  $.ajax({
+          url:"http://150.136.4.8/api/Client/all",
+          type:"GET",
+          datatype:"JSON",
+          success:function(respuesta){
+            const $select = document.querySelector("#clients2");
+            for (let i = $select.options.length; i >= 0; i--) {
+                 $select.remove(i);
+                }
+            for(let i=0;i<respuesta.length;i++){
+	        const option = document.createElement('option');
+                option.value = respuesta[i].idClient;
+  	        option.text = respuesta[i].name;
+   	        $select.appendChild(option);
+             }
+	    document.getElementById("clients2").value="";
+          }
+          });
+        }
+      cargarClientes2();
+      </script>
+      <select name="clients2" id="clients2" style="width:150px;">
+      </select>
+      <label for="partyrooms2">partyroom:</label>
+      <script>
+        function cargarPartyrooms2(){
+	  $.ajax({
+          url:"http://150.136.4.8/api/Partyroom/all",
+          type:"GET",
+          datatype:"JSON",
+          success:function(respuesta){
+            const $select = document.querySelector("#partyrooms2");
+            for (let i = $select.options.length; i >= 0; i--) {
+                 $select.remove(i);
+                }
+            for(let i=0;i<respuesta.length;i++){
+	        const option = document.createElement('option');
+                option.value = respuesta[i].id;
+  	        option.text = respuesta[i].name;
+   	        $select.appendChild(option);
+             }
+	    document.getElementById("partyrooms2").value="";
+          }
+          });
+        }
+      cargarPartyrooms2();
+      </script>
+      <select name="partyrooms2" id="partyrooms2" style="width:150px;">
+      </select>
+      <button onclick='guardarInformacion("Reservation","reservas",
+      {startDate:$("#start").val(),
+       devolutionDate:$("#devolution").val(),
+       client:{idClient:parseInt($("#clients2").val())},
+       partyroom:{id:parseInt($("#partyrooms2").val())}
+      });limpiarCampos({"clients2":0,"partyrooms2":0});alert("Se ha guardado.")'>Agregar</button>
+    </div>
+
+  </body>
+</html>
+    
