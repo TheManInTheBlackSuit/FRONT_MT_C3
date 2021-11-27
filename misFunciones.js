@@ -1,6 +1,6 @@
 function traerInformacion(extension, espacio){
 $.ajax({
-url:"http://localhost:8080/api/"+extension+"/all",
+url:"http://150.136.4.8:8080/api/"+extension+"/all",
 type:"GET",
 datatype:"JSON",
 success:function(respuesta){
@@ -237,7 +237,7 @@ function pintarRespuesta(respuesta,extension, espacio){
 function guardarInformacion(extension, espacio, data){
       let dataToSend=JSON.stringify(data);
       $.ajax({
-  	url:"http://localhost:8080/api/"+extension+"/save",
+  	url:"http://150.136.4.8:8080/api/"+extension+"/save",
   	type:"POST",
   	data:dataToSend,
         contentType:"application/JSON",
@@ -259,7 +259,7 @@ function guardarInformacion(extension, espacio, data){
 function actualizarInformacion(extension, espacio, data){
   let dataToSend=JSON.stringify(data);
   $.ajax({
-    url:"http://localhost:8080/api/"+extension+"/update",
+    url:"http://150.136.4.8:8080/api/"+extension+"/update",
     type:"PUT",
     data:dataToSend,
     contentType:"application/JSON",
@@ -279,7 +279,7 @@ function actualizarInformacion(extension, espacio, data){
 
 function borrarElemento(extension,espacio, idElemento){
   $.ajax({
-    url:"http://localhost:8080/api/"+extension+"/"+idElemento,
+    url:"http://150.136.4.8:8080/api/"+extension+"/"+idElemento,
     type:"DELETE",
     contentType:"application/JSON",
     datatype:"JSON",
@@ -293,7 +293,7 @@ function borrarElemento(extension,espacio, idElemento){
 function habilitarEdicion(extension,espacio, id){
   document.getElementById("actualizar_"+espacio).style.display='block';
   $.ajax({
-   url:"http://localhost:8080/api/"+extension+"/"+id,
+   url:"http://150.136.4.8:8080/api/"+extension+"/"+id,
    type:"GET",
    datatype:"JSON",
    success:function(respuesta){
