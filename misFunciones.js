@@ -1,6 +1,6 @@
 function traerInformacion(extension, espacio){
 $.ajax({
-url:"http://150.136.4.8:8080/api/"+extension+"/all",
+url:"http://localhost:8080/api/"+extension+"/all",
 type:"GET",
 datatype:"JSON",
 success:function(respuesta){
@@ -10,24 +10,38 @@ success:function(respuesta){
 }
 
 
+function mostrarEspacio(espacio){
+  document.getElementById("gestion_categorias").style.display='none';
+  document.getElementById("gestion_salones").style.display='none';
+  document.getElementById("gestion_clientes").style.display='none';
+  document.getElementById("gestion_mensajes").style.display='none';
+  document.getElementById("gestion_reservas").style.display='none';
+  document.getElementById("gestion_"+espacio).style.display='block';
+
+}
+
 function pintarRespuesta(respuesta,extension, espacio){
   $("#resultado_"+espacio).empty();
-  let myTable="<table>";
+  let myTable="<table class='TablaResultados'>";
+  var id=-1;
   if(extension=="Partyroom"){
     myTable+="<tr>";
     let columnas=respuesta[0];
     for(columna in columnas){
       if(columna!="id" && columna!="messages" && columna!="reservations"){
-        myTable+="<th>"+columna+"</th>";
+        myTable+="<th class='DatoResultados'>"+columna+"</th>";
       }
     }
     myTable+="</tr>";
     for(i=0;i<respuesta.length;i++){
       myTable+="<tr>";
       for(campo in respuesta[i]){
+        if(campo=="id"){
+          id=respuesta[i][campo];
+        }
         if(campo!="id" && campo!="messages" && campo!="reservations"){
           if(campo=="category"){
-            myTable+="<td>";
+            myTable+="<td class='DatoResultados'>";
           
             for(atr in respuesta[i][campo]){
               if(atr!="id"){    
@@ -38,10 +52,12 @@ function pintarRespuesta(respuesta,extension, espacio){
             myTable+="</td>";
           }
           else{
-            myTable+="<td>"+respuesta[i][campo]+"</td>";
+            myTable+="<td class='DatoResultados'>"+respuesta[i][campo]+"</td>";
           }
         }
       }
+      myTable+="<td><button onclick='habilitarEdicion("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Editar</button></td>";
+      myTable+="<td><button onclick='borrarElemento("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Borrar</button></td>";
       myTable+="</tr>";
     }
   }
@@ -51,16 +67,19 @@ function pintarRespuesta(respuesta,extension, espacio){
     let columnas=respuesta[0];
     for(columna in columnas){
       if(columna!="id"){
-        myTable+="<th>"+columna+"</th>";
+        myTable+="<th class='DatoResultados'>"+columna+"</th>";
       }
     }
     myTable+="</tr>";
     for(i=0;i<respuesta.length;i++){
       myTable+="<tr>";
       for(campo in respuesta[i]){
+        if(campo=="id"){
+          id=respuesta[i][campo];
+        }
         if(campo!="id"){
           if(campo=="partyrooms"){
-            myTable+="<td>";
+            myTable+="<td class='DatoResultados'>";
             for(subcampo in respuesta[i][campo]){
               myTable+="[";
               for(atr in respuesta[i][campo][subcampo]){
@@ -74,10 +93,12 @@ function pintarRespuesta(respuesta,extension, espacio){
             myTable+="</td>";
           }
           else{
-            myTable+="<td>"+respuesta[i][campo]+"</td>";
+            myTable+="<td class='DatoResultados'>"+respuesta[i][campo]+"</td>";
           }
         }
       }
+      myTable+="<td><button onclick='habilitarEdicion("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Editar</button></td>";
+      myTable+="<td><button onclick='borrarElemento("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Borrar</button></td>";
       myTable+="</tr>";
     }
   }
@@ -86,34 +107,41 @@ function pintarRespuesta(respuesta,extension, espacio){
     myTable+="<tr>";
     let columnas=respuesta[0];
     for(columna in columnas){
-      if(columna!="password"){
-        myTable+="<th>"+columna+"</th>";
+      if(columna!="password" && columna!="idClient" && columna!="messages" && columna!="reservations"){
+        myTable+="<th class='DatoResultados'>"+columna+"</th>";
       }
     }
     myTable+="</tr>";
     for(i=0;i<respuesta.length;i++){
       myTable+="<tr>";
       for(campo in respuesta[i]){
-        if(campo!="password"){
-          if(campo=="messages" || campo=="reservations"){
-            myTable+="<td>";
-            for(subcampo in respuesta[i][campo]){
-              myTable+="[";
-              for(atr in respuesta[i][campo][subcampo]){
-                if(atr!="id"){    
-                  myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][subcampo][atr] +" ";
-                  myTable+="<br>";
+        if(campo=="idClient"){
+          id=respuesta[i][campo];
+        }
+        else{
+          if(campo!="password" && campo!="messages" && campo!="reservations"){
+            if(campo=="messages" || campo=="reservations"){
+              myTable+="<td class='DatoResultados'>";
+              for(subcampo in respuesta[i][campo]){
+                myTable+="[";
+                for(atr in respuesta[i][campo][subcampo]){
+                  if(atr!="id"){    
+                    myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][subcampo][atr] +" ";
+                    myTable+="<br>";
+                  }
                 }
+                myTable+="]<br>";
               }
-              myTable+="]<br>";
+              myTable+="</td>";
             }
-            myTable+="</td>";
-          }
-          else{
-            myTable+="<td>"+respuesta[i][campo]+"</td>";
+            else{
+              myTable+="<td class='DatoResultados'>"+respuesta[i][campo]+"</td>";
+            }
           }
         }
       }
+      myTable+="<td><button onclick='habilitarEdicion("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Editar</button></td>";
+      myTable+="<td><button onclick='borrarElemento("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Borrar</button></td>";
       myTable+="</tr>";
     }
   }
@@ -123,64 +151,81 @@ function pintarRespuesta(respuesta,extension, espacio){
     let columnas=respuesta[0];
     for(columna in columnas){
       if(columna!="idMessage"){
-        myTable+="<th>"+columna+"</th>";
+        myTable+="<th class='DatoResultados'>"+columna+"</th>";
       }
     }
     myTable+="</tr>";
     for(i=0;i<respuesta.length;i++){
       myTable+="<tr>";
       for(campo in respuesta[i]){
+        if(campo=="idMessage"){
+          id=respuesta[i][campo];
+        }
         if(campo!="idMessage"){
           if(campo=="partyroom" || campo=="client"){
-            myTable+="<td>";
+            myTable+="<td class='DatoResultados'>";
           
             for(atr in respuesta[i][campo]){
 
-              if(atr!="idClient" && atr!="id" && atr!="password"){    
+              if(atr!="idClient" && atr!="id" && atr!="password"){ 
+                if(atr=="category"){
+                  myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr]["name"] +" ";
+                }
+                else{   
                 myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr] +" ";
+                }
                 myTable+="<br>";
               }
             }
             myTable+="</td>";
           }
           else{
-            myTable+="<td>"+respuesta[i][campo]+"</td>";
+            myTable+="<td class='DatoResultados'>"+respuesta[i][campo]+"</td>";
           }
         }
       }
+      myTable+="<td><button onclick='habilitarEdicion("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Editar</button></td>";
+      myTable+="<td><button onclick='borrarElemento("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Borrar</button></td>";
       myTable+="</tr>";
     }
   }
   else if(extension=="Reservation"){
-
     myTable+="<tr>";
     let columnas=respuesta[0];
     for(columna in columnas){
-     
-        myTable+="<th>"+columna+"</th>";
-      
+        myTable+="<th class='DatoResultados'>"+columna+"</th>";
     }
     myTable+="</tr>";
     for(i=0;i<respuesta.length;i++){
       myTable+="<tr>";
       for(campo in respuesta[i]){
-          if(campo=="partyroom" || campo=="client"){
-            myTable+="<td>";
-          
-            for(atr in respuesta[i][campo]){
+        if(campo=="idReservation"){
+          id=respuesta[i][campo];
+        }
 
-              if(atr!="idClient" && atr!="password" && atr!="age"){    
-                myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr] +" ";
-                myTable+="<br>";
+        if(campo=="partyroom" || campo=="client"){
+          myTable+="<td class='DatoResultados'>";
+        
+          for(atr in respuesta[i][campo]){
+            if(atr!="password" && atr!="age" && atr!="id" && atr!="messages"){    
+              if(atr=="category"){
+                myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr]["name"] +" ";
               }
+              else{
+                myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr] +" ";
+              }
+              myTable+="<br>";
             }
-            myTable+="</td>";
           }
-          else{
-            myTable+="<td>"+respuesta[i][campo]+"</td>";
-          }
+          myTable+="</td>";
+        }
+        else{
+          myTable+="<td class='DatoResultados'>"+respuesta[i][campo]+"</td>";
+        }
         
       }
+      myTable+="<td><button onclick='habilitarEdicion("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Editar</button></td>";
+      myTable+="<td><button onclick='borrarElemento("+'"'+extension+'"'+","+'"'+espacio+'"'+","+id+")'>Borrar</button></td>";
       myTable+="</tr>";
     }
   }
@@ -192,7 +237,7 @@ function pintarRespuesta(respuesta,extension, espacio){
 function guardarInformacion(extension, espacio, data){
       let dataToSend=JSON.stringify(data);
       $.ajax({
-  	url:"http://150.136.4.8:8080/api/"+extension+"/save",
+  	url:"http://localhost:8080/api/"+extension+"/save",
   	type:"POST",
   	data:dataToSend,
         contentType:"application/JSON",
@@ -212,51 +257,75 @@ function guardarInformacion(extension, espacio, data){
 
 
 function actualizarInformacion(extension, espacio, data){
-let dataToSend=JSON.stringify(data);
-$.ajax({
-  url:"https://g3e4c51ddf11034-reto1ciclo3.adb.us-ashburn-1.oraclecloudapps.com/ords/admin/"+extension+"/"+extension,
-  type:"PUT",
-  data:dataToSend,
-  contentType:"application/JSON",
-  datatype:"JSON",
-  success:function(respuesta){
-      traerInformacion(extension, espacio);
-      alert("Se ha actualizado.");
-  }
-});
-document.getElementById("actualizar_"+espacio).style.display='none';
+  let dataToSend=JSON.stringify(data);
+  $.ajax({
+    url:"http://localhost:8080/api/"+extension+"/update",
+    type:"PUT",
+    data:dataToSend,
+    contentType:"application/JSON",
+    datatype:"JSON",
+    success:function(respuesta){
+        traerInformacion(extension, espacio);
+        alert("Se ha actualizado.");
+        cargarCategorias();
+        cargarPartyrooms();
+        cargarClientes();
+        cargarPartyrooms2();
+        cargarClientes2();
+    }
+  });
+  document.getElementById("actualizar_"+espacio).style.display='none';
 }
 
 function borrarElemento(extension,espacio, idElemento){
- let myData={
-  id:idElemento
- };
- let dataToSend=JSON.stringify(myData);
- $.ajax({
-  url:"https://g3e4c51ddf11034-reto1ciclo3.adb.us-ashburn-1.oraclecloudapps.com/ords/admin"+"/"+extension+"/"+extension,
-  type:"DELETE",
-  data:dataToSend,
-  contentType:"application/JSON",
-  datatype:"JSON",
-  success:function(respuesta){
-      traerInformacion(extension, espacio);
-      alert("Se ha eliminado.");
-}
- });
+  $.ajax({
+    url:"http://localhost:8080/api/"+extension+"/"+idElemento,
+    type:"DELETE",
+    contentType:"application/JSON",
+    datatype:"JSON",
+    success:function(respuesta){
+        traerInformacion(extension, espacio);
+        alert("Se ha eliminado.");
+    } 
+  });
 }
 
 function habilitarEdicion(extension,espacio, id){
   document.getElementById("actualizar_"+espacio).style.display='block';
-  document.getElementById("id_act_"+espacio).disabled='true';
   $.ajax({
-   url:"https://g3e4c51ddf11034-reto1ciclo3.adb.us-ashburn-1.oraclecloudapps.com/ords/admin"+"/"+extension+"/"+extension+"/"+id,
+   url:"http://localhost:8080/api/"+extension+"/"+id,
    type:"GET",
    datatype:"JSON",
    success:function(respuesta){
-      console.log(respuesta);
-      let columnas=respuesta.items[0];
-     for(columna in columnas){
-       document.getElementById(columna+"_act_"+espacio).value=columnas[columna];
+     for(columna in respuesta){
+      if(extension=="Partyroom"){
+        if(columna!="category" && columna!="messages" && columna!="reservations"){
+          document.getElementById(columna+"_act_"+espacio).value=respuesta[columna];
+        }
+      }
+      if(extension=="Category"){
+        if(columna!="partyrooms"){
+          document.getElementById(columna+"_act_"+espacio).value=respuesta[columna];
+        }
+      }
+      if(extension=="Client"){
+        document.getElementById("password"+"_act_"+espacio).value="";
+        if(columna!="email" && columna!="password" && columna!="messages" && columna!="reservations"){
+          document.getElementById(columna+"_act_"+espacio).value=respuesta[columna];
+        }
+      }
+      if(extension=="Message"){
+        if(columna!="partyroom" && columna!="client"){
+          document.getElementById(columna+"_act_"+espacio).value=respuesta[columna];
+        }
+      }
+      if(extension=="Reservation"){
+        if(columna!="status" && columna!="partyroom" && columna!="client" && columna!="score" 
+        && columna!="startDate" && columna!="devolutionDate"){
+          document.getElementById(columna+"_act_"+espacio).value=respuesta[columna];
+        }
+      }
+
      }
    }
   });
