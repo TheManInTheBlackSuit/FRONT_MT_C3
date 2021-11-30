@@ -16,6 +16,7 @@ function mostrarEspacio(espacio){
   document.getElementById("gestion_clientes").style.display='none';
   document.getElementById("gestion_mensajes").style.display='none';
   document.getElementById("gestion_reservas").style.display='none';
+  document.getElementById("gestion_reportes").style.display='none';
   document.getElementById("gestion_"+espacio).style.display='block';
 
 }
@@ -168,7 +169,7 @@ function pintarRespuesta(respuesta,extension, espacio){
             for(atr in respuesta[i][campo]){
 
               if(atr!="idClient" && atr!="id" && atr!="password"){ 
-                if(atr=="category"){
+                if(atr=="category" && respuesta[i][campo]["category"]!=null){
                   myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr]["name"] +" ";
                 }
                 else{   
@@ -208,7 +209,7 @@ function pintarRespuesta(respuesta,extension, espacio){
         
           for(atr in respuesta[i][campo]){
             if(atr!="password" && atr!="age" && atr!="id" && atr!="messages"){    
-              if(atr=="category"){
+              if(atr=="category" && respuesta[i][campo]["category"]!=null){
                 myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr]["name"] +" ";
               }
               else{
@@ -336,5 +337,104 @@ function limpiarCampos(campos){
     document.getElementById(String(campo)).value="";
   }
 
+}
+
+function reporteReservas(desde,hasta){
+  $.ajax({
+    url:"http://150.136.4.8:8080/api/Reservation/report-dates/"+desde+"/"+hasta,
+    type:"GET",
+    datatype:"JSON",
+    success:function(respuesta){
+      $("#reporte_reservas").empty();
+      let myTable="<table class='TablaResultados'>";
+      var id=-1;
+      myTable+="<tr>";
+      let columnas=respuesta[0];
+      for(columna in columnas){
+          myTable+="<th class='DatoResultados'>"+columna+"</th>";
+      }
+      myTable+="</tr>";
+      for(i=0;i<respuesta.length;i++){
+        myTable+="<tr>";
+        for(campo in respuesta[i]){
+          if(campo=="idReservation"){
+            id=respuesta[i][campo];
+          }
+
+          if(campo=="partyroom" || campo=="client"){
+            myTable+="<td class='DatoResultados'>";
+          
+            for(atr in respuesta[i][campo]){
+              if(atr!="password" && atr!="age" && atr!="id" && atr!="messages"){    
+                if(atr=="category" && respuesta[i][campo]["category"]!=null){
+                  myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr]["name"] +" ";
+                }
+                else{
+                  myTable+="<b>"+atr+"</b>"+": "+respuesta[i][campo][atr] +" ";
+                }
+                myTable+="<br>";
+              }
+            }
+            myTable+="</td>";
+          }
+          else{
+            myTable+="<td class='DatoResultados'>"+respuesta[i][campo]+"</td>";
+          }
+          
+        }
+        myTable+="</tr>";
+      }
+      myTable+="</table>";
+      $("#reporte_reservas").append(myTable);
+    }
+  })
+}
+
+function reporteCompletadas(){
+  $.ajax({
+    url:"http://150.136.4.8:8080/api/Reservation/report-status",
+    type:"GET",
+    datatype:"JSON",
+    success:function(respuesta){
+      $("#reporte_completadas").empty();
+      let myTable="<table class='TablaResultados'>"
+      myTable+="<tr>"
+      myTable+="<th class='DatoResultados'>Completas</th>";
+      myTable+="<th class='DatoResultados'>Canceladas</th>";
+      myTable+="</tr>";
+      myTable+="<tr>";
+      myTable+="<td class='DatoResultados'>"+respuesta["completed"]+"</td>";
+      myTable+="<td class='DatoResultados'>"+respuesta["cancelled"]+"</td>";
+      myTable+="</tr>";
+      $("#reporte_completadas").append(myTable);
+    }
+  })
+}
+
+function reporteClientes(){
+  $.ajax({
+    url:"http://150.136.4.8:8080/api/Reservation/report-clients",
+    type:"GET",
+    datatype:"JSON",
+    success:function(respuesta){
+      if(respuesta.length>0){
+        $("#reporte_clientes").empty();
+        let myTable="<table class='TablaResultados'>";
+        myTable+="<tr>";
+        myTable+="<th class='DatoResultados'> Cliente </th>"
+        myTable+="<th class='DatoResultados'> # de reservas </th>"
+        myTable+="</tr>";
+        for(indice in respuesta){
+          cliente=respuesta[indice];
+          myTable+="<tr>";
+          myTable+="<td class='DatoResultados'>"+cliente["client"]["name"]+"</td>";
+          myTable+="<td class='DatoResultados'>"+cliente["total"]+"</td>";
+          myTable+="<tr>";
+        }
+        myTable+="</table>";
+        $("#reporte_clientes").append(myTable);
+      }
+    }
+  })
 }
 

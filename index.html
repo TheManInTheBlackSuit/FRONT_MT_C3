@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Reto 4</title>
+    <title>Reto 5</title>
     <style>
       .TablaResultados{
         border-style:ridge;
@@ -10,12 +10,15 @@
       .DatoResultados{
         border:1px solid black;
       }
+      .contenido{
+        margin: 2% 5% 4% 5%;
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="misFunciones.js"></script>
   </head>
   <body>
-    <h1 style="text-align:center;color:black;font-size: 50px;">Reto 4</h1>
+    <h1 style="text-align:center;color:black;font-size: 50px;">Reto 5</h1>
     <div style="background-color:black">
       <table cellspacing="20" cellpadding="0">
         <th>
@@ -24,6 +27,7 @@
           <td><button style="background-color:black;cursor:pointer" onclick='mostrarEspacio("clientes")'><h2 style="text-align:center;font-family:verdana;color:white">Clientes</h2></button></td>
           <td><button style="background-color:black;cursor:pointer" onclick='mostrarEspacio("mensajes")'><h2 style="text-align:center;font-family:verdana;color:white">Mensajes</h2></button></td>
           <td><button style="background-color:black;cursor:pointer" onclick='mostrarEspacio("reservas")'><h2 style="text-align:center;font-family:verdana;color:white">Reservas</h2></button></td>
+          <td><button style="background-color:black;cursor:pointer" onclick='mostrarEspacio("reportes")'><h2 style="text-align:center;font-family:verdana;color:white">Reportes</h2></button></td>
         </th>
       </table>
     </div>
@@ -31,7 +35,7 @@
 
 
 
-    <div id="gestion_salones" style="display:none">
+    <div id="gestion_salones" style="display:none" class="contenido">
       <h2 style="font-family:verdana">Gestión de salones</h2>
       <table cellspacing="10">
         <tr>
@@ -142,7 +146,7 @@
 
 
 
-    <div id="gestion_categorias">
+    <div id="gestion_categorias" class="contenido">
       <h2 style="font-family:verdana">Gestión de categorías</h2>
       <table cellspacing="10">
         <tr>
@@ -204,7 +208,7 @@
     </div>
 
 
-    <div id="gestion_clientes" style="display:none">
+    <div id="gestion_clientes" style="display:none" class="contenido">
       <h2 style="font-family:verdana">Gestión de clientes</h2>
       <table cellspacing="10">
         <tr>
@@ -280,7 +284,7 @@
 
 
 
-    <div id="gestion_mensajes" style="display:none">
+    <div id="gestion_mensajes" style="display:none" class="contenido">
       <h2 style="font-family:verdana">Gestión de mensajes</h2>
       <table cellspacing="10">
         <tr>
@@ -388,7 +392,7 @@
 
 
 
-    <div id="gestion_reservas" style="display:none">
+    <div id="gestion_reservas" style="display:none" class="contenido">
       <h2 style="font-family:verdana">Gestión de reservas</h2>
       <table cellspacing="10">
         <tr>
@@ -499,9 +503,9 @@
               <tr>
                 <td><label for="cars"><b>Estado de la reserva:</b></label></td>
                 <td><select name="cars" id="status_act_reservas">
-                  <option value="Programado">Programado</option>
-                  <option value="Cancelado">Cancelado</option>
-                  <option value="Realizado">Realizado</option>
+                  <option value="created">Programado</option>
+                  <option value="cancelled">Cancelado</option>
+                  <option value="completed">Realizado</option>
                 </select></td>
               </tr>
               <tr>
@@ -519,6 +523,49 @@
       </table>
     </div>
 
+
+    <div id="gestion_reportes" class="contenido" style="display: none;">
+      <div style="background-color: yellowgreen;padding:1% 2% 2% 2%;">
+        <h3 style="color: white;">Reporte de reservas</h3>
+        <table cellspacing="10" cellpadding="0">
+          <tr>
+            <td><label for="desde"><b>Desde:</b></label></td>
+            <td><input type="date" id="desde" name="desde"
+              value="2021-01-01"
+              min="2018-01-01" max="2023-12-31"></td>
+          </tr>
+          <tr>
+            <td><label for="hasta"><b>Hasta:</b></label></td>
+            <td><input type="date" id="hasta" name="hasta"
+              value="2021-01-01"
+              min="2018-01-01" max="2024-12-31"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button onclick='reporteReservas($("#desde").val(),
+            $("#hasta").val())'>Consultar</button></td>
+
+          </tr>
+        </table>
+        <div id="reporte_reservas">
+        </div>
+      </div>
+
+      <div style="background-color: royalblue;padding:1% 2% 2% 2%;">
+        <h3 style="color: white;">Reservas completadas hasta ahora</h3>
+        <button onclick="reporteCompletadas()">Consultar reservas completadas</button>
+        <div id="reporte_completadas">
+        </div>
+      </div>
+
+      <div style="background-color: darkred;padding:1% 2% 2% 2%;">
+        <h3 style="color: white;">Top clientes</h3>
+        <button onclick="reporteClientes()">Consultar</button>
+        <div id="reporte_clientes">
+        </div>
+      </div>
+
+    </div>
 
   </body>
 </html>
